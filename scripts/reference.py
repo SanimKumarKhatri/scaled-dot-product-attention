@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """reference for the scaled dot-product attention task.
 
 Code to populate the input files the Verilog testbench will read, then computes the
@@ -38,7 +37,33 @@ def save_int_matrix(path, m):
     with open(path, "w") as f:
         for row in m:
             f.write(" ".join(str(int(v)) for v in row) + "\n")
+            
+def save_q88_hex_matrix(path, m):
+    with open(path, "w") as f:
+        for row in m:
+            tokens = []
+            for v in row:
+                q88 = int(round(float(v) * 256)) & 0xFFFF
+                tokens.append(f"{q88:04x}")
+            f.write(" ".join(tokens) + "\n")
 
+def save_q115_hex_matrix(path, m):
+    """Write matrix as Q1.15 unsigned, 18-bit hex (top 2 bits zero)."""
+    with open(path, "w") as f:
+        for row in m:
+            tokens = []
+            for v in row:
+                q = int(round(float(v) * 32768)) & 0x3FFFF  # 18 bits
+                tokens.append(f"{q:05x}")
+            f.write(" ".join(tokens) + "\n")
+
+def save_exp_lut(path):
+    """256 entries: round(32768 * 2^(-f/256)) for f = 0..255"""
+    with open(path, "w") as f:
+        for k in range(256):
+            v = min(0xFFFF, int(round(32768.0 * (2.0 ** (-k / 256.0)))))
+            f.write(f"{v:04x}\n")
+            
 def softmax_rows(s):
     shifted = s - s.max(axis=1, keepdims=True)
     e = np.exp(shifted)
@@ -68,17 +93,26 @@ def attention(x, wq, wk, wv, d_k):
 
 
 if __name__ == "__main__":
-    save_int_matrix("input/x.txt", X)
-    save_int_matrix("input/wq.txt", WQ)
-    save_int_matrix("input/wk.txt", WK)
-    save_int_matrix("input/wv.txt", WV)
+    save_q88_hex_matrix("input/x.txt", X)
+    save_q88_hex_matrix("input/wq.txt", WQ)
+    save_q88_hex_matrix("input/wk.txt", WK)
+    save_q88_hex_matrix("input/wv.txt", WV)
 
     q, k, v, s, s_scaled, w, o = attention(X, WQ, WK, WV, D_K)
+
+    save_q88_hex_matrix("input/q.txt", q)
+    save_q88_hex_matrix("input/k.txt", k)
+    save_q88_hex_matrix("input/v.txt", v)
+    save_q88_hex_matrix("input/s.txt", s)
+    save_q88_hex_matrix("input/s_scaled.txt", s_scaled)
+
+    save_q115_hex_matrix("input/a.txt", w)
+
+    save_exp_lut("input/exp_lut.hex")
+    np.savetxt("output/expected_output.txt", o, fmt="%.6f")
+    
 
     for name, mat in [("Q", q), ("K", k), ("V", v), ("S = Q K^T", s),
                       ("S / sqrt(d_k)", s_scaled), ("softmax weights", w),
                       ("O (output)", o)]:
         print(f"{name}:\n{mat}\n")
-
-    np.savetxt("output/expected_output.txt", o, fmt="%.6f")
-    print("filled input/x.txt input/wq.txt input/wk.txt input/wv.txt output/expected_output.txt")
