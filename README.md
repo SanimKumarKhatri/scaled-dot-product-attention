@@ -73,14 +73,14 @@ flowchart TD
 ## File structure and Files
 
 ```
-mac.v
+mac_unit.v
 divider.v
 softmax.v
 loop_control.v
 attention.v
 ```
 
-### mac.v
+### mac_unit.v
 
 - MAC (Multiply-Accumulate) unit multilpies two operands(`a` and `b`) and accumulates it on the accumulator (`acc`). At each clock pulse, it muliplies given two operands and then adds it to the accumulator.
 - At each clock pulse, the MAC either resets the `acc`, clears the `acc`, accumulates `a*b` into `acc`, or holds `acc` as it is. Thhis depends on `rst_n`, `clr`, and `en` in the corresponding order.
