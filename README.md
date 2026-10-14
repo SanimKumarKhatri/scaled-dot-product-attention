@@ -75,7 +75,7 @@ flowchart TD
 ```
 mac_unit.v
 divider.v
-softmax.v
+softmax_unit.v
 loop_control.v
 attention.v
 ```
@@ -88,3 +88,23 @@ attention.v
 ### divider.v
 
 - The divider uses restoring division algorithm. 
+
+### softmax_unit.v
+
+- The softmax function is a mapping that takes a vector of scores/numbers and maps it to a vector of corresponding probabilities.
+- For a vector $\vec{z} = [z_1, z_2, z_3, ..., z_K]$, the softmax formual is as follows: $\sigma (\vec{z})_i = \frac{e^{z_i}}{\sum_{j=1}^{K}e^{z_j}}$
+- Every output is in (0, 1).
+- The outputs sum to 1.
+
+#### Hardware Implementation
+For each row of matrix `S`:
+- Find maximum value in each row (`smax`)
+- Compute $e^{S[i][j] - smax}$ for every column j, store it in buffer and accumulate the sum (`esum`).
+- Divide each exponent value by the `esum`.
+
+#### Why subtract max from each element?
+If any $z_i$ is large (let it be 100), then $e^{100} \approx 2.7 \times 10^{43}$, which overflows any fixed-point or floating-point format. Even if only one value is large, the entire sum will blow up. So to overcome this, we subtract the maximum element of each row with individual elements of the row so that each element are less than or equal 0. This will bound the value of exponent from 0 to 1, making it easier to compute with no overflow.
+
+$\sigma (\vec{z_i}) = \frac{e^{z_i}}{\sum_{j=1}^{K}e^{z_j}} = \frac{e^{z_i}*e^{-m}}{\sum_{j=1}^{K}e^{z_j}* e^{-m}} = \frac{e^{z_i-m}}{\sum_{j=1}^{K}e^{z_j-m}}$
+
+Where, $m = max_k(z_k)$ is a constant for each row. With $m$ chosen as the row maximum, every exponent argument is $\le 0$.
