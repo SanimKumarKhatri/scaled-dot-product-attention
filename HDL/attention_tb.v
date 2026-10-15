@@ -34,6 +34,7 @@ module tb_attention;
     integer i, j;
     integer idx;
     reg signed [15:0] tmp [0:15]; 
+    integer o_file;
 
     task load_word(input [1:0] sel, input [15:0] addr, input signed [15:0] data);
         begin
@@ -59,47 +60,56 @@ module tb_attention;
     endtask
 
     initial begin
-        // ---- reset ----
+        // reset
         rst_n = 0;
         repeat (4) @(negedge clk);
         rst_n = 1;
         repeat (2) @(negedge clk);
 
-        // ---- load X ----
+        // load X
         $readmemh("../input/x.txt", tmp);
         for (idx = 0; idx < N*DM; idx = idx + 1)
             load_word(2'd0, idx[15:0], tmp[idx]);
 
-        // ---- load Wq ----
+        // load Wq
         $readmemh("../input/wq.txt", tmp);
         for (idx = 0; idx < DM*DK; idx = idx + 1)
             load_word(2'd1, idx[15:0], tmp[idx]);
 
-        // ---- load Wk ----
+        // load Wk
         $readmemh("../input/wk.txt", tmp);
         for (idx = 0; idx < DM*DK; idx = idx + 1)
             load_word(2'd2, idx[15:0], tmp[idx]);
 
-        // ---- load Wv ----
+        // load Wv
         $readmemh("../input/wv.txt", tmp);
         for (idx = 0; idx < DM*DK; idx = idx + 1)
             load_word(2'd3, idx[15:0], tmp[idx]);
 
-        // ---- run ----
+        // run
         run_attention;
-
+        
         $display("cycles = %0d", cycles);
-        $display("--- O ---");
+
+        o_file = $fopen("../output/o.txt", "w");
+        if (o_file == 0) begin
+            $display("ERROR: could not open output/o.txt");
+            $finish;
+        end 
+        
         for (i = 0; i < N; i = i + 1) begin
             for (j = 0; j < DK; j = j + 1) begin
                 rd_addr = i*DK + j;
                 #1;
                 $write("%8d ", $signed(rd_data));
+                $fwrite(o_file, "%04h ", rd_data);
             end
             $write("\n");
+            $fwrite(o_file, "\n");
         end
-
-        $display("done.");
+        $fclose(o_file);
+        $display("Output written to ../output/output.txt");
+        $display("Done");
         $finish;
     end
 
