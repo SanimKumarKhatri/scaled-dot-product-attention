@@ -3,6 +3,7 @@ module tb_attention;
     localparam N     = 2;
     localparam DM    = 4;
     localparam DK    = 4;
+    localparam TIMEOUT = 10000;
 
     reg clk = 0;
     always #5 clk = ~clk;
@@ -36,6 +37,13 @@ module tb_attention;
     reg signed [15:0] tmp [0:15]; 
     integer o_file;
 
+    // TIMEOUT Watchdog
+    initial begin
+        #(TIMEOUT * 10);
+        $display("ERROR: Simulation timeout after %0d% cycles", TIMEOUT);
+        $finish;    
+    end
+    
     task load_word(input [1:0] sel, input [15:0] addr, input signed [15:0] data);
         begin
             @(negedge clk);
@@ -47,6 +55,48 @@ module tb_attention;
             load_en   = 0;
         end
     endtask
+
+    task dump_intermediates;
+        begin
+            $display("Intermediate Values");
+            
+            $display("Q matrix (Q8.8):");
+            for (i = 0; i < N; i = i + 1) begin
+                for (j = 0; j < DK; j = j + 1)
+                    $write("%6d ", $signed(dut.q_mem[i*DK + j]));
+                $write("\n");
+            end
+
+            $display("K matrix (Q8.8):");
+            for (i = 0; i < N; i = i + 1) begin
+                for (j = 0; j < DK; j = j + 1)
+                    $write("%6d ", $signed(dut.k_mem[i*DK + j]));
+                $write("\n");
+            end
+
+            $display("V matrix (Q8.8):");
+            for (i = 0; i < N; i = i + 1) begin
+                for (j = 0; j < DK; j = j + 1)
+                    $write("%6d ", $signed(dut.v_mem[i*DK + j]));
+                $write("\n");
+            end
+
+            $display("S matrix (scaled scores) (Q8.8):");
+            for (i = 0; i < N; i = i + 1) begin
+                for (j = 0; j < N; j = j + 1)
+                    $write("%6d ", $signed(dut.s_mem[i*N + j]));
+                $write("\n");
+            end
+
+            $display("A matrix (attention weights, Q1.15):");
+            for (i = 0; i < N; i = i + 1) begin
+                for (j = 0; j < N; j = j + 1)
+                    $write("%6d ", $signed(dut.a_mem[i*N + j]));
+                $write("\n");
+            end
+        end
+    endtask
+
 
     task run_attention;
         begin
@@ -91,6 +141,9 @@ module tb_attention;
         
         $display("cycles = %0d", cycles);
 
+        dump_intermediates;
+
+        // write to the output file
         o_file = $fopen("../output/o.txt", "w");
         if (o_file == 0) begin
             $display("ERROR: could not open output/o.txt");
