@@ -90,13 +90,16 @@ flowchart LR
 ```
 ### Hardware Block Diagram
 ![Load demux routing to X, Wq, Wk, Wv memories](./resource/load_select_demux.png)
+
 Figure: Loading data and memories in the design
 
 ![MAC0 diagram](./resource/MAC0.png)
 ![MAC1 diagram](./resource/MAC1.png)
+
 Figure: MAC hardware block diagram
 
 ![Softmax diagram](./resource/softmax.png)
+
 Figure: Softmax hardware block diagram
 
 ### Design Decisions
