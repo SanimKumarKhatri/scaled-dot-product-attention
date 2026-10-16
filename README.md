@@ -202,7 +202,7 @@ If any $z_i$ is large (let it be 100), then $e^{100} \approx 2.7 \times 10^{43}$
 
 $$\sigma(\vec{z})_i = \frac{e^{z_i}}{\sum_{j=1}^{K} e^{z_j}}$$
 $$ = \frac{e^{z_i}*e^{-m}}{\sum_{j=1}^{K} e^{z_j}* e^{-m}}$$
-$$ = \frac{e^{z_i-m}}{\sum_{j=1}^{K} e^{z_j-m}}$$
+$$ = \frac{e^{z_{i}-m}}{\sum_{j=1}^{K} e^{z_{j}-m}}$$
 
 Where, $m = max_k(z_k)$ is a constant for each row. With $m$ chosen as the row maximum, every exponent argument is $\le 0$.
 
