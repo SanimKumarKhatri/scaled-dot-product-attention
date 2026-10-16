@@ -201,7 +201,7 @@ For each row of matrix $S$:
 If any $z_i$ is large (let it be 100), then $e^{100} \approx 2.7 \times 10^{43}$, which overflows fixed-point or 32-bit floating-point format. Even if only one value is large, the entire sum will blow up. So to overcome this, we subtract the maximum element of each row with individual elements of the row so that each element is less than or equal 0. This will bound the value of exponent from 0 to 1 ($e^{z_i - m} \in (0, 1]$), making it easier to compute with no overflow.
 
 $$\sigma(\vec{z})_i = \frac{e^{z_i}}{\sum_{j=1}^{K} e^{z_j}}$$
-$$ = \frac{e^{z_i}*e^{-m}}{\sum_{j=1}^{K} e^{z_j}* e^{-m}}$$
+$$ = \frac{e^{z_i} \times e^{-m}}{\sum_{j=1}^{K} e^{z_j}\times e^{-m}}$$
 $$ = \frac{e^{z_{i}-m}}{\sum_{j=1}^{K} e^{z_{j}-m}}$$
 
 Where, $m = max_k(z_k)$ is a constant for each row. With $m$ chosen as the row maximum, every exponent argument is $\le 0$.
