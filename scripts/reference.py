@@ -93,23 +93,24 @@ def attention(x, wq, wk, wv, d_k):
 
 
 if __name__ == "__main__":
-    save_q88_hex_matrix("input/x.txt", X)
-    save_q88_hex_matrix("input/wq.txt", WQ)
-    save_q88_hex_matrix("input/wk.txt", WK)
-    save_q88_hex_matrix("input/wv.txt", WV)
+    save_q88_hex_matrix("../input/x.txt", X)
+    save_q88_hex_matrix("../input/wq.txt", WQ)
+    save_q88_hex_matrix("../input/wk.txt", WK)
+    save_q88_hex_matrix("../input/wv.txt", WV)
 
     q, k, v, s, s_scaled, w, o = attention(X, WQ, WK, WV, D_K)
 
-    save_q88_hex_matrix("input/q.txt", q)
-    save_q88_hex_matrix("input/k.txt", k)
-    save_q88_hex_matrix("input/v.txt", v)
-    save_q88_hex_matrix("input/s.txt", s)
-    save_q88_hex_matrix("input/s_scaled.txt", s_scaled)
+    save_q88_hex_matrix("../input/q.txt", q)
+    save_q88_hex_matrix("../input/k.txt", k)
+    save_q88_hex_matrix("../input/v.txt", v)
+    save_q88_hex_matrix("../input/s.txt", s)
+    save_q88_hex_matrix("../input/s_scaled.txt", s_scaled)
 
-    save_q115_hex_matrix("input/a.txt", w)
+    save_q115_hex_matrix("../input/a.txt", w)
 
-    save_exp_lut("input/exp_lut.hex")
-    np.savetxt("output/expected_output.txt", o, fmt="%.6f")
+    # save_exp_lut("../input/exp_lut.hex")
+    save_q88_hex_matrix("../output/expected_o.txt", o)
+    np.savetxt("../output/expected_output.txt", o, fmt="%.6f")
     
 
     for name, mat in [("Q", q), ("K", k), ("V", v), ("S = Q K^T", s),
