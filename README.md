@@ -25,6 +25,35 @@ graph LR
     V --> O
 ```
 
+
+## Table of Contents
+
+- [Computation](#computation)
+- [Architecture](#architecture)
+  - [Phase Diagram](#phase-diagram)
+  - [Hardware Block Diagram](#hardware-block-diagram)
+  - [Design Decisions](#design-decisions)
+    - [Table 1: Architectural Decisions](#table-1-architectural-decisions)
+    - [Table 2: Numeric Format Decision](#table-2-numeric-format-decision)
+    - [Table 3: Sub-Module Implementation Decisions](#table-3-sub-module-implementation-decisions)
+- [Files](#files)
+- [Module Details](#module-details)
+  - [mac_unit.v](#mac_unitv)
+  - [divider.v](#dividerv)
+  - [softmax_unit.v](#softmax_unitv)
+  - [loop_control.v](#loop_controlv)
+  - [attention.v](#attentionv)
+- [File Formats](#file-formats)
+  - [Input Files](#input-files)
+  - [Output File](#output-file)
+  - [Waveform Dump](#waveform-dump)
+- [Verification and Results](#verification-and-results)
+  - [How to Run](#how-to-run)
+  - [Test](#test)
+- [Constraints](#constraints)
+- [Toolchain](#toolchain)
+- [Limitations](#limitations)
+
 ## Computation
 N = Number of tokens
 
