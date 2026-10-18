@@ -88,7 +88,7 @@ module attention #(
     wire qk_mac_clear, qk_mac_enable, qk_write_enable;
     wire qk_busy, qk_done;
 
-    loop_ctrl #(.NI(N), .NJ(DK), .NK(DM), .JSTEP(1)) u_qk (
+    loop_control #(.NI(N), .NJ(DK), .NK(DM), .JSTEP(1)) u_qk (
         .clk(clk), .rst_n(rst_n), .start(qk_start),
         .i(qk_i), .j(qk_j), .k(qk_k),
         .mac_clear(qk_mac_clear),
@@ -104,7 +104,7 @@ module attention #(
     wire s_mac_clear, s_mac_enable, s_write_enable;
     wire s_busy, s_done;
 
-    loop_ctrl #(.NI(N), .NJ(N), .NK(DK), .JSTEP(1)) u_s (
+    loop_control #(.NI(N), .NJ(N), .NK(DK), .JSTEP(1)) u_s (
         .clk(clk), .rst_n(rst_n), .start(s_start),
         .i(s_i), .j(s_j), .k(s_k),
         .mac_clear(s_mac_clear),
@@ -120,7 +120,7 @@ module attention #(
     wire v_mac_clear, v_mac_enable, v_write_enable;
     wire v_busy, v_done;
 
-    loop_ctrl #(.NI(N), .NJ(DK), .NK(DM), .JSTEP(1)) u_v (
+    loop_control #(.NI(N), .NJ(DK), .NK(DM), .JSTEP(1)) u_v (
         .clk(clk), .rst_n(rst_n), .start(v_start),
         .i(v_i), .j(v_j), .k(v_k),
         .mac_clear(v_mac_clear),
@@ -136,7 +136,7 @@ module attention #(
     wire o_mac_clear, o_mac_enable, o_write_enable;
     wire o_busy, o_done;
 
-    loop_ctrl #(.NI(N), .NJ(DK), .NK(N), .JSTEP(2)) u_o (
+    loop_control #(.NI(N), .NJ(DK), .NK(N), .JSTEP(2)) u_o (
         .clk(clk), .rst_n(rst_n), .start(o_start),
         .i(o_i), .j(o_j), .k(o_k),
         .mac_clear(o_mac_clear),
@@ -251,10 +251,10 @@ module attention #(
 
     wire signed [ACC_W-1:0] acc0, acc1;
 
-    mac #(.A_W(18), .B_W(16), .ACC_W(ACC_W)) u_mac0 (.clk(clk),
+    mac_unit #(.A_W(18), .B_W(16), .ACC_W(ACC_W)) u_mac0 (.clk(clk),
     .rst_n(rst_n), .clr(mac0_clear), .en(mac0_enable), .op_a(mac0_a), .op_b(mac0_b), .accumulator(acc0));
 
-    mac #(.A_W(18), .B_W(16), .ACC_W(ACC_W)) u_mac1 (.clk(clk),
+    mac_unit #(.A_W(18), .B_W(16), .ACC_W(ACC_W)) u_mac1 (.clk(clk),
     .rst_n(rst_n), .clr(mac1_clear), .en(mac1_enable), .op_a(mac1_a), .op_b(mac1_b), .accumulator(acc1));
 
     localparam SH_QK = FRAC;
@@ -289,7 +289,7 @@ module attention #(
 
     assign sm_s_read_data = s_mem[sm_s_read_address];
 
-    softmax #(.N(N), .LUT_FILE(LUT_FILE)) u_sm (.clk(clk), .rst_n(rst_n), .start(sm_start),
+    softmax_unit #(.N(N), .LUT_FILE(LUT_FILE)) u_sm (.clk(clk), .rst_n(rst_n), .start(sm_start),
     .s_read_address(sm_s_read_address), .s_read_data(sm_s_read_data), .a_write_address(sm_a_write_address), 
     .a_write_data(sm_a_write_data), .a_write_enable(sm_a_write_enable), .busy(sm_busy), .done(sm_done));
 
@@ -363,7 +363,7 @@ module attention #(
                 end
 
                 ATTN_DONE: state <= ATTN_IDLE;
-                
+                default:;
             endcase
         end
     end

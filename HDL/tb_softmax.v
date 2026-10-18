@@ -23,7 +23,7 @@ module tb_softmax;
         if (a_wr_we) a_mem[a_wr_addr] <= a_wr_data;
     end
 
-    softmax #(.N(N)) dut (.clk(clk), .rst_n(rst_n), .start(start), .busy(busy), .done(done),
+    softmax_unit #(.N(N)) dut (.clk(clk), .rst_n(rst_n), .start(start), .busy(busy), .done(done),
     .s_read_address(s_rd_addr), .s_read_data(s_rd_data), .a_write_address(a_wr_addr), .a_write_data(a_wr_data), .a_write_enable(a_wr_we));
 
     task run_softmax;

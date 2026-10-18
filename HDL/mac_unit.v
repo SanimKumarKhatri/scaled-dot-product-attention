@@ -4,7 +4,7 @@
 //  acc <- acc + a*b    when enable is high
 //  acc <- acc          holds otherwise
 
-module mac #(
+module mac_unit #(
     parameter A_W  = 16,      // width of operand a
     parameter B_W  = 16,      // width of operand b
     parameter ACC_W  = 40      // width of accumulator

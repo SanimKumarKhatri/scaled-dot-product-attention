@@ -1,6 +1,6 @@
 // softmax unit
 
-module softmax #(
+module softmax_unit #(
     parameter N = 2,
     parameter LUT_FILE = "../input/exp_lut.hex"
 )(

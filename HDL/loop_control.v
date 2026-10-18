@@ -1,6 +1,6 @@
 // loop control
 
-module loop_ctrl #(
+module loop_control #(
     parameter NI = 2,
     parameter NJ = 4,
     parameter NK = 4,

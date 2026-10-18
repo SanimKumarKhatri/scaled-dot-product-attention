@@ -13,7 +13,7 @@ module tb_loop_ctrl;
     wire [((NK>1)?$clog2(NK):1)-1:0]   k;
     wire mac_clear, mac_enable, write_enable, busy, done;
 
-    loop_ctrl #(.NI(NI), .NJ(NJ), .NK(NK), .JSTEP(JSTEP)) dut (
+    loop_control #(.NI(NI), .NJ(NJ), .NK(NK), .JSTEP(JSTEP)) dut (
         .clk(clk), .rst_n(rst_n), .start(start),
         .i(i), .j(j), .k(k),
         .mac_clear(mac_clear), .mac_enable(mac_enable),
