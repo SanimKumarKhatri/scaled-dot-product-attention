@@ -217,7 +217,8 @@ FSM:
 ### softmax_unit.v
 
 - The softmax function is a mapping that takes a vector of scores/numbers and maps it to a vector of corresponding probabilities.
-- For a vector $\vec{z} = [z_1, z_2, z_3, \ldots, z_K]$, the softmax formula is as follows: $\sigma(\vec{z})_i = \frac{e^{z_i}}{\sum_{j=1}^{K} e^{z_j}}$
+- For a vector $\vec{z} = [z_1, z_2, z_3, \ldots, z_K]$, the softmax formula is as follows: 
+$$\sigma(\vec{z})_i = \frac{e^{z_i}}{\sum_{j=1}^{K} e^{z_j}}$$
 - Every output is in $(0, 1)$ and outputs sum to 1.
 
 #### Hardware Implementation
